@@ -1,0 +1,107 @@
+version: '2.4'
+
+services:
+  database:
+    container_name: 'AIRMON_database'
+    restart: unless-stopped
+    image: postgres:12
+    volumes:
+      - database-data:/var/lib/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_DB=apidb
+    ports:
+      - '5432'
+    networks: 
+      - private_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d apidb -U admin -h 0.0.0.0 -p 5432"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+  
+  pgadmin:
+    container_name: 'AIRMON_pgadmin'
+    restart: unless-stopped
+    image: dpage/pgadmin4
+    depends_on: 
+      database:
+        condition: service_healthy
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: 'pgadmin@pgadmin4.com'
+      PGADMIN_DEFAULT_PASSWORD: 'PgAdmin2021!'
+    ports: 
+      - '4500:80'
+    networks: 
+      - private_network
+    logging:
+      driver: none
+
+  backend:
+    container_name: 'AIRMON_backend'
+    restart: unless-stopped
+    build:
+      context: './Backend'
+      dockerfile: 'Dockerfile'
+    volumes:
+        - ./Backend:/go/src/airmon
+    depends_on:
+        database:
+          condition: service_healthy
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_DB=apidb
+      - EMAIL_USER=36824@ufp.edu.pt
+      - EMAIL_PASS=250595559
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - ADDRESS=localhost:4000
+    ports:
+      - '8081'
+    networks:
+      - private_network
+      - public_network
+    
+  frontend:
+    container_name: 'AIRMON_frontend'
+    restart: unless-stopped
+    build:
+      context: './Frontend'
+      dockerfile: 'Dockerfile'
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - '8080'
+    networks: 
+      - public_network
+
+  proxy:
+    container_name: 'AIRMON_proxy'
+    restart: unless-stopped
+    depends_on: 
+      - frontend
+      - backend
+    build:
+      context: './Proxy'
+      dockerfile: 'Dockerfile'
+    ports:
+      - '4000:80'
+    networks: 
+      - public_network
+
+volumes:
+  database-data:
+
+networks:
+    public_network:
+        driver: bridge
+    private_network:
+        driver: bridge
