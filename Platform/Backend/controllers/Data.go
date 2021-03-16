@@ -66,6 +66,16 @@ func GetData(c *gin.Context) {
 	var data []model.Data
 
 	id := c.Param("id")
+
+	services.Db.Order("created_at desc").Where("device_id = ?", id).Find(&data)
+
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": data})
+}
+
+func GetDataOffset(c *gin.Context) {
+	var data []model.Data
+
+	id := c.Param("id")
 	limit, err := strconv.Atoi(c.Param("limit"))
 
 	if err != nil {

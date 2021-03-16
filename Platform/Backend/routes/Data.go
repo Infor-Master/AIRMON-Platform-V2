@@ -14,6 +14,10 @@ func GetData(c *gin.Context) {
 	controllers.GetData(c)
 }
 
+func GetDataOffset(c *gin.Context) {
+	controllers.GetDataOffset(c)
+}
+
 func Parse(c *gin.Context) {
 	controllers.Parse(c)
 }

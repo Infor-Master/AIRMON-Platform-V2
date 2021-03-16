@@ -13,18 +13,6 @@
         </b-collapse>
         <b-navbar-nav class="ml-auto">
           <b-nav-form @submit.prevent="handlerOffset">
-            <b-form-input
-              size="sm"
-              class="mr-sm-2"
-              placeholder="Limit"
-              v-model="limit"
-            ></b-form-input>
-            <b-form-input
-              size="sm"
-              class="mr-sm-2"
-              placeholder="Offset"
-              v-model="offset"
-            ></b-form-input>
             <b-form-select
               v-model="selectedData"
               :options="options"
@@ -60,7 +48,7 @@
         :rows="data"
         :clickable="false"
         :printable="false"
-        :perPage="[10, 20, 50, 100]"
+        :perPage="[10, 20, 50, 100, 500, 1000]"
         :defaultPerPage="20"
       >
       </datatable>
@@ -79,7 +67,7 @@ export default {
   },
   data() {
     return {
-      limit: 100,
+      limit: 50,  //limit for graph elements
       offset: 0,
       device: {},
       selectedData: { id:"CO2_PPM", text: "CO2", label: "ppm"},
@@ -175,11 +163,12 @@ export default {
           method: "get",
           url:
             `/data/` +
-            this.$route.params.id +
-            `/` +
-            this.limit +
-            `/` +
-            this.offset,
+            this.$route.params.id,
+            // this.$route.params.id +
+            // `/` +
+            // this.limit +
+            // `/` +
+            // this.offset,
           baseURL:
             settings.backend.protocol + settings.URL + settings.backend.path,
           data: {},
@@ -214,7 +203,7 @@ export default {
         },
         data: [],
       };
-      for (var i in this.data) {
+      for (var i in this.data.slice(0, this.limit)) {
         this.datasource.data.push({
           label: this.data[i]["CreatedAt"],
           value: this.data[i][field.id],

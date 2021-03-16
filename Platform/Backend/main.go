@@ -62,7 +62,8 @@ func main() {
 	data.Use(services.AuthorizationRequired())
 	{
 		data.POST("/", routes.AddData)
-		data.GET("/:id/:limit/:offset", routes.GetData)
+		data.GET("/:id", routes.GetData)
+		data.GET("/:id/:limit/:offset", routes.GetDataOffset)
 	}
 
 	auth := router.Group("/api")
