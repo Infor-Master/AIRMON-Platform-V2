@@ -1,5 +1,5 @@
 {
-  "URL": "localhost:4000",
+  "URL": "www.airmon.pt",
   "backend": {
     "protocol": "http://",
     "path": "/api"

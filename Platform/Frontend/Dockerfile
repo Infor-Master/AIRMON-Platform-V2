@@ -13,4 +13,5 @@ COPY package.json /app/package.json
 RUN npm install
 
 # start app
-CMD ["npm", "run", "serve"]
+#CMD ["npm", "run", "serve"]
+CMD http-server dist -p 8080
