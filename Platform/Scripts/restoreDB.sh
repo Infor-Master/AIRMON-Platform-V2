@@ -1,0 +1,1 @@
+cat $1 | sudo docker exec -i AIRMON_database psql apidb -U admin

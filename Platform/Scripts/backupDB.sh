@@ -1,0 +1,1 @@
+sudo docker exec AIRMON_database pg_dumpall -c -U admin > BACKUPS/dump_$(date + "%Y-%m-%d_%H_%M_%S").sql
