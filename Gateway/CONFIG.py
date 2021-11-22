@@ -15,11 +15,6 @@ networks = [
     "USER": "teste@ufp.pt",
     "PASS": "ola123"
     },{
-    "AUTH": "WPA2E",
-    "SSID": "eduroam",
-    "USER": "36824@ufp.pt",
-    "PASS": "250595559"
-    },{
     "AUTH": "WPA2",
     "SSID": "",
     "PASS": ""
