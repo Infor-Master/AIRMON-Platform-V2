@@ -37,7 +37,7 @@ services:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=passw0rd
       - POSTGRES_DB=apidb
-      - ADDRESS=www.airmon.pt
+      - ADDRESS=airmon.ufp.pt
     ports:
       - '88'
     networks:
@@ -62,13 +62,11 @@ services:
     networks: 
       - public_network
 
-  
-
 volumes:
   database-data:
 
 networks:
     public_network:
-        driver: bridge
+        driver: host
     private_network:
-        driver: bridge
+        driver: host
