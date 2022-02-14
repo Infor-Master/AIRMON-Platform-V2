@@ -62,7 +62,7 @@ services:
     networks: 
       - public_network
 
-
+  
 
 volumes:
   database-data:
