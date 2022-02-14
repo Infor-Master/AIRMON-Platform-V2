@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:alpine
 
 RUN set -eux; \
 	export GOROOT="$(go env GOROOT)";
