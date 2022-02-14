@@ -69,4 +69,4 @@ networks:
     public_network:
         driver: host
     private_network:
-        driver: host
+        driver: bridge
