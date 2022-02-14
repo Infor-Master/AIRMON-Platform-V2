@@ -39,7 +39,7 @@ services:
       - POSTGRES_DB=apidb
       - ADDRESS=www.airmon.pt
     ports:
-      - '8081'
+      - '88'
     networks:
       - private_network
       - public_network
@@ -58,23 +58,11 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - '8080'
+      - '89'
     networks: 
       - public_network
 
-  proxy:
-    container_name: 'AIRMON_proxy'
-    restart: unless-stopped
-    depends_on: 
-      - frontend
-      - backend
-    build:
-      context: './Proxy'
-      dockerfile: 'Dockerfile'
-    ports:
-      - '80:80'
-    networks: 
-      - public_network
+
 
 volumes:
   database-data:

@@ -1,5 +1,5 @@
 {
-  "URL": "www.airmon.pt",
+  "URL": "airmon.ufp.pt",
   "backend": {
     "protocol": "http://",
     "path": "/api"
