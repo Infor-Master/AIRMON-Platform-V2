@@ -14,4 +14,4 @@ RUN npm install
 
 # start app
 #CMD ["npm", "run", "serve"]
-CMD http-server dist -p 8080
+CMD http-server dist -p 89

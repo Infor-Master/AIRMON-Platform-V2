@@ -73,5 +73,5 @@ func main() {
 		auth.POST("/parse", routes.Parse)
 	}
 
-	router.Run(":8081")
+	router.Run(":88")
 }
