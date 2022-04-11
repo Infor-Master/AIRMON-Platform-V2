@@ -9,7 +9,7 @@ import machine
 from machine import SD
 import CONFIG as cfg
 from MQ131_O3_Sensor import MQ131
-from MiCs6814_MultiChannel_Sensor import MiCS6814
+from MiCS6814_MultiChannel_Sensor import MiCS6814
 from SEN0219_CO2_Sensor import SEN0219_SERIAL
 from PMS5003ST_Sensor import PMS5003ST
 
@@ -81,7 +81,7 @@ def th_send(data, id):
 
             data = '{"keycode": "'+keycode+'","CO2": '+CO2+',"NO2": '+NO2+',"O3": '+O3+',"CH2O": '+CH2O+',"Temp": '+Temp+',"Humd": '+Humd+'}'
 
-            print('[Data] sending...')
+            print('[DATA] sending...')
             s.send(data)
             print("[DATA] saving localy...")
             f = open('/sd/DataLog.csv', 'a')
