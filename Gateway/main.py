@@ -10,6 +10,7 @@ from coms import C_Wifi
 from coms import C_LoRa
 from coms import C_RTC
 from logger import Logger
+#from machine import WDT
 
 pycom.heartbeat(False)
 pycom.rgbled(0x000000) # off
@@ -29,7 +30,7 @@ def th_send(data, id):
         try:
             payload=_encryptor(data)
             log._log('[Thread] Payload prepared, sending...')
-            res = urequests.post(config.url,headers=config.headers, data=payload)
+            res = urequests.post(config.url,headers=config.headers, data=payload, _timeout=10)
             log._log('[Thread] Response received as: ' + str(res.status_code))
             if (res.status_code == 200 or res.status_code == 201):
                 res.close()
@@ -45,15 +46,18 @@ def th_send(data, id):
 
 log = Logger('debug.log')
 c_wifi = C_Wifi(config.networks)
-c_rtc = C_RTC()
+c_rtc = C_RTC((2022, 4, 13, 16, 10, 0, 0, 0))
 c_lora = C_LoRa()
+#wdt = WDT(timeout=20000)
 
 ##########################
 #  MAIN                  #
 ##########################
 
+
 while True:
     try:
+        #wdt.feed()
         if not c_wifi.wlan.isconnected():
             log._log('[Main] Wlan not connected. Going to reset')
             machine.reset()

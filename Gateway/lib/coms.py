@@ -18,7 +18,7 @@ class C_Wifi:
             self.wlan = WLAN(mode=WLAN.STA)
             self.wlan.antenna(WLAN.EXT_ANT) #por defeito escolhe sempre a interna
 
-            _timeout = 5000
+            _timeout = 10000
             nets = self.wlan.scan()
             for net in nets:
                 if self.wlan.isconnected():
@@ -58,18 +58,22 @@ class C_LoRa:
 
 class C_RTC:
 
-    def __init__(self):
+    def __init__(self, init_time):
         self.log = Logger('debug.log')
         print('[RTC] RTC initiating...')
         self.log._log('[RTC] RTC initiating...')
         self.rtc = RTC()
-        self.rtc.ntp_sync(server="pool.ntp.org")
+        self.rtc.ntp_sync("pool.ntp.org", 360)            #pool.ntp.org
         print('[RTC] RTC sync in progress...')
         self.log._log('[RTC] RTC sync in progress...')
-        utime.sleep_ms(750)
+        sync_loop = 100
+        while not self.rtc.synced() and sync_loop > 0:
+            utime.sleep_ms(100)
+            sync_loop = sync_loop - 1
         if not self.rtc.synced():
-            print('[RTC] RTC failed to sync')
-            self.log._log('[RTC] RTC failed to sync')
+            print('[RTC] RTC failed to sync, using given')
+            self.log._log('[RTC] RTC failed to sync, using given')
+            self.rtc.init(init_time)
         else:
             print('[RTC] RTC synced')
             self.log._log('[RTC] RTC synced')

@@ -29,8 +29,6 @@ def th_send(data, id):
         try:
             # Pinos 0, 1, 4, 5, 6, 7, 8, 12, 22, 23 reservados para sistema
 
-            pycom.rgbled(0x0000ff) #Blue
-
             print('[PMS] heating up...')
             PMS = PMS5003ST(TX='P2', RX='P3')
             utime.sleep(30)
@@ -38,7 +36,6 @@ def th_send(data, id):
             PMSdata = PMS.PMSReadActive()
             PMS.deinit()
             if(PMSdata==False):
-                pycom.rgbled(0xffff00)
                 print('[PMS] failed to read')
                 continue
             CH2O_PPM=(24.45 * PMSdata[12]) / 30.026
@@ -72,7 +69,6 @@ def th_send(data, id):
             SENdata = SEN_S.SEN_Serial_read()
             SEN_S.deinit()
             if(SENdata==False):
-                pycom.rgbled(0xffff00)
                 print('[SEN] failed to read')
                 continue
             SENPPM = (256*SENdata[2]) + SENdata[3]
@@ -90,14 +86,13 @@ def th_send(data, id):
             print("[DATA] : "+data)
             print("[DATA] finished")
 
-            pycom.rgbled(0x000000) # off
             machine.sleep(sleep_lenght)
         except Exception as e:
             import sys
-            pycom.rgbled(0xff0000) # red
             print("[Error] ")
             with open("error.log", "a") as f:
                 sys.print_exception(e, f)
 
 pycom.heartbeat(False)
+pycom.rgbled(0x000000) # off
 _thread.start_new_thread(th_send, (0, 0))

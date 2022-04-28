@@ -32,7 +32,7 @@ class Response:
         return ujson.loads(self.content)
 
 
-def request(method, url, data=None, json=None, headers={}, stream=None):
+def request(method, url, data=None, json=None, headers={}, stream=None, _timeout=None):
     try:
         proto, dummy, host, path = url.split("/", 3)
     except ValueError:
@@ -50,14 +50,20 @@ def request(method, url, data=None, json=None, headers={}, stream=None):
         host, port = host.split(":", 1)
         port = int(port)
 
-    ai = usocket.getaddrinfo(host, port, 0, usocket.SOCK_STREAM)
-    ai = ai[0]
+    try:
+        ai = usocket.getaddrinfo(host, port, 0, usocket.SOCK_STREAM)  #Can Block here
+        ai = ai[0]
+
+    except Exception:
+        raise
 
     s = usocket.socket(ai[0], ai[1], ai[2])
+
     try:
-        s.connect(ai[-1])
+        s.settimeout(_timeout) #settimeout OR setblocking before connect
+        s.connect(ai[-1]) #Can Block here
         if proto == "https:":
-            s = ussl.wrap_socket(s, server_hostname=host)
+            s = ussl.wrap_socket(s, server_hostname=host, timeout=_timeout) #ignores settimeout, timeout must be added again
         s.write(b"%s /%s HTTP/1.0\r\n" % (method, path))
         if not "Host" in headers:
             s.write(b"Host: %s\r\n" % host)
@@ -95,7 +101,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None):
                     raise ValueError("Unsupported " + l)
             elif l.startswith(b"Location:") and not 200 <= status <= 299:
                 raise NotImplementedError("Redirects not yet supported")
-    except OSError:
+    except Exception:
         s.close()
         raise
 
