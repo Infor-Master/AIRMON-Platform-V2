@@ -17,7 +17,7 @@ pycom.rgbled(0x000000) # off
 #  Functions             #
 ##########################
 
-def _encryptor(data):
+def _parser(data):
     msg = str(binascii.b2a_base64(data))
     payload='{"msg": "'+msg[2:-1]+'"}'
     return payload
@@ -46,7 +46,7 @@ while True:
         if data:
             data=str(data)[2:-1]
             log._log('[Main] Received data from Lora')
-            payload=_encryptor(data)
+            payload=_parser(data)
             for i in range(5):  #5 attempts
                 log._log('[Main] Attempt #' + str(i))
                 log._log('[Main] Payload prepared, sending...')
@@ -57,6 +57,5 @@ while True:
                     break
                 else:
                     res.close()
-        utime.sleep(1)
     except Exception as e:
         log._log_exception(e)
