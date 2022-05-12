@@ -46,13 +46,13 @@ class C_Wifi:
 
 class C_LoRa:
 
-    def __init__(self):
+    def __init__(self, block=False):
         self.log = Logger('debug.log')
         print('[LoRa] LoRa socket starting...')
         self.log._log('[LoRa] LoRa socket starting...')
         self.lora = LoRa(mode=LoRa.LORA, region=LoRa.EU868)
         self.lora_socket = socket.socket(socket.AF_LORA, socket.SOCK_RAW)
-        self.lora_socket.setblocking(False)
+        self.lora_socket.setblocking(block)
         print('[LoRa] LoRa socket started')
         self.log._log('[LoRa] LoRa socket started')
 

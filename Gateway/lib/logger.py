@@ -7,6 +7,14 @@ class Logger:
 
     def __init__(self, filename):
         self.filename = filename
+        file = open(filename + '.log', 'w+')
+        file.close()
+        file = open('OLD_' + filename + '.log', 'w+')
+        file.close()
+        file = open('error.log', 'w+')
+        file.close()
+        file = open('OLD_error.log', 'w+')
+        file.close()
 
     def _log_exception(self, e):
         with open('error.log', "a") as f:
