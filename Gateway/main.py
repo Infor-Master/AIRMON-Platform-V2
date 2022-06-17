@@ -9,6 +9,7 @@ from coms import C_Wifi
 from coms import C_LoRa
 from coms import C_RTC
 from logger import Logger
+from machine import WDT
 
 pycom.heartbeat(False)
 pycom.rgbled(0x000000) # off
@@ -30,6 +31,7 @@ log = Logger('debug.log')
 c_wifi = C_Wifi(config.networks)
 c_rtc = C_RTC((2022, 5, 10, 18, 26, 0, 0, 0))
 c_lora = C_LoRa(block=True)
+wdt = WDT(timeout=600000) #10 minutos
 
 ##########################
 #  MAIN                  #
@@ -52,6 +54,8 @@ while True:
                 log._log('[Main] Payload prepared, sending...')
                 res = urequests.post(config.url,headers=config.headers, data=payload, _timeout=10)
                 log._log('[Main] Response received as: ' + str(res.status_code))
+                wdt.feed()
+                log._log('[Main] WDT feed')
                 if (res.status_code == 200 or res.status_code == 201):
                     res.close()
                     break
